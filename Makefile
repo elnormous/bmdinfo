@@ -1,4 +1,4 @@
-CFLAGS=-c -Wall -include "$(SDK_PATH)/include"
+CFLAGS=-c -Wall -I"$(SDK_PATH)/include"
 SOURCES=main.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=bmdinfo
