@@ -8,7 +8,7 @@ all: $(SOURCES) $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(OBJECTS) -o $@
 
-.c.o:
+.cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
 
 .PHONY: clean
