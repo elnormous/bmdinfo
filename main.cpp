@@ -221,7 +221,7 @@ public:
 	    {
 	    	if (std::chrono::steady_clock::now() - startTime > std::chrono::seconds(2))
 	    	{
-	    		break;
+	    		return false;
 	    	}
 
         	std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -282,7 +282,7 @@ public:
 	        case bmdMode4kDCI24: std::cout << 34 << ", bmdMode4kDCI24" << std::endl; break;
 	        case bmdMode4kDCI25: std::cout << 35 << ", bmdMode4kDCI25" << std::endl; break;
 
-	        default: std::cout << -1 << ", unknown" << std::endl; return false;
+	        default: std::cout << ", unknown" << std::endl; return false;
 	    }
 
 	    int64_t num, den;
