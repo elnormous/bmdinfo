@@ -16,7 +16,7 @@ OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=bmdinfo
 
 ifeq ($(platform),linux)
-LDFLAGS=-lpthread
+LDFLAGS=-lpthread -ldl
 else ifeq ($(platform),macos)
 LDFLAGS=-framework CoreFoundation
 endif
