@@ -115,11 +115,6 @@ public:
 	    {
 	        dl->Release();
 	    }
-
-	    if (delegate)
-	    {
-	    	delegate->Release();
-	    }
 	}
 
 	bool detect(int video_connection, int audio_connection)
@@ -206,7 +201,7 @@ public:
 	    if (!dm)
 	        return false;
 
-	    delegate = new QueryDelegate(dm->GetDisplayMode());
+	    QueryDelegate* delegate = new QueryDelegate(dm->GetDisplayMode());
 
 	    if (!delegate)
 	        return false;
@@ -294,7 +289,6 @@ private:
     IDeckLinkDisplayModeIterator* dm_it = nullptr;
     IDeckLinkDisplayMode* dm = nullptr;
     IDeckLinkConfiguration* conf = nullptr;
-    QueryDelegate* delegate = nullptr;
 };
 
 int main()
