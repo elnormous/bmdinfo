@@ -71,7 +71,8 @@ QueryDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame  *v_frame,
 {
     if (v_frame->GetFlags() & bmdFrameHasNoInputSource)
     {
-        return S_OK;
+    	display_mode = 0;
+        done = true;
     }
     else
     {
