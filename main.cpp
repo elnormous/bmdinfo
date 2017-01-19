@@ -302,7 +302,6 @@ private:
 
 int main()
 {
-    BMDDisplayMode display_mode = -1;
     HRESULT ret;
     uint32_t i = 0;
 
@@ -310,7 +309,6 @@ int main()
 
     if (!it)
     {
-    	it->Release();
         return 1;
     }
 
