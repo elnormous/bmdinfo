@@ -6,6 +6,8 @@
 #include "DeckLinkAPI.h"
 #include "DeckLinkAPIDispatch.cpp"
 
+static const uint8_t BMDINFO_VERSION[2] = {0, 1};
+
 class QueryDelegate : public IDeckLinkInputCallback
 {
 public:
@@ -115,7 +117,7 @@ public:
 	    }
 	}
 
-	bool detect(int videoConnection, int audioConnection)
+	bool detect(int videoConnection, int audioConnection, int timeout)
 	{
 		HRESULT ret;
 
@@ -221,7 +223,7 @@ public:
 
 	    while (!delegate->isDone())
 	    {
-	    	if (std::chrono::steady_clock::now() - startTime > std::chrono::seconds(2))
+	    	if (std::chrono::steady_clock::now() - startTime > std::chrono::seconds(timeout))
 	    	{
 	    		return false;
 	    	}
@@ -332,8 +334,39 @@ private:
     IDeckLinkConfiguration* configuration = nullptr;
 };
 
-int main()
+int main(int argc, const char* argv[])
 {
+	int videoConneciton = 0;
+	int audioConnection = 0;
+	int timeout = 2;
+
+	for (int i = 1; i < argc; ++i)
+    {
+        if (std::string(argv[i]) == "--video_connnection")
+        {
+            if (++i < argc) videoConneciton = atoi(argv[i]);
+        }
+        else if (std::string(argv[i]) == "--audio_connnection")
+        {
+            if (++i < argc) audioConnection = atoi(argv[i]);
+        }
+        else if (std::string(argv[i]) == "--timeout")
+        {
+            if (++i < argc) timeout = atoi(argv[i]);
+        }
+        else if (std::string(argv[i]) == "--help")
+        {
+            const char* exe = argc >= 1 ? argv[0] : "bmdinfo";
+            std::cout << "Usage: " << exe << " [--video_connection <number>] [--audio_connection <number>] [--timeout <seconds>]" << std::endl;
+            return EXIT_SUCCESS;
+        }
+        else if (std::string(argv[i]) == "--version")
+        {
+            std::cout << "BMD info v" << static_cast<uint32_t>(BMDINFO_VERSION[0]) << "." << static_cast<uint32_t>(BMDINFO_VERSION[1]) << std::endl;
+            return EXIT_SUCCESS;
+        }
+    }
+
     HRESULT ret;
     uint32_t i = 0;
 
@@ -341,7 +374,7 @@ int main()
 
     if (!deckLinkIterator)
     {
-        return 1;
+        return EXIT_FAILURE;
     }
 
     while (true)
@@ -352,7 +385,7 @@ int main()
         if (ret != S_OK)
         {
     		deckLinkIterator->Release();
-        	return 0;
+        	return EXIT_SUCCESS;
         }
 
         std::cout << "Instance: " << i << ", ";
@@ -386,7 +419,7 @@ int main()
 
         Instance instance(deckLink);
 
-		if (!instance.detect(4, 2))
+		if (!instance.detect(videoConneciton, audioConnection, timeout))
 		{
 			std::cout << "failed to detect video mode" << std::endl;
 		}
@@ -402,5 +435,5 @@ int main()
     	deckLinkIterator->Release();
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
