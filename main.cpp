@@ -293,7 +293,7 @@ public:
 	    int64_t num, den;
     	delegate->GetDisplayMode()->GetFrameRate(&num, &den);
 
-	    std::cout << ", resolution: " << delegate->GetDisplayMode()->GetWidth() << "x" << delegate->GetDisplayMode()->GetHeight() << ", framerate: " << static_cast<float>(num) / den << ", field dominance: ";
+	    std::cout << ", resolution: " << delegate->GetDisplayMode()->GetWidth() << "x" << delegate->GetDisplayMode()->GetHeight() << ", framerate: " << static_cast<float>(den) / num << ", field dominance: ";
 
 	    switch (delegate->GetDisplayMode()->GetFieldDominance())
 	    {
