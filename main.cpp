@@ -282,8 +282,37 @@ public:
 	        case bmdMode4kDCI24: std::cout << 34 << ", bmdMode4kDCI24" << std::endl; break;
 	        case bmdMode4kDCI25: std::cout << 35 << ", bmdMode4kDCI25" << std::endl; break;
 
-	        default: std::cout << -1 << ", unknown" << std::endl; break;
+	        default: std::cout << -1 << ", unknown" << std::endl; return false;
 	    }
+
+	    int64_t num, den;
+    	displayMode->GetFrameRate(&num, &den);
+
+	    std::cout << "Resolution: " << displayMode->GetWidth() << "x" << displayMode->GetHeight() << ", framerate: " << static_cast<float>(num) / den << ", field dominance: ";
+
+	    switch (displayMode->GetFieldDominance())
+	    {
+	    case bmdUnknownFieldDominance:
+	        std::cout << "unknown";
+	        break;
+	    case bmdLowerFieldFirst:
+	        std::cout << "lower field first";
+	        break;
+	    case bmdUpperFieldFirst:
+	        std::cout << "upper field first";
+	        break;
+	    case bmdProgressiveFrame:
+	        std::cout << "progressive frame";
+	        break;
+	    case bmdProgressiveSegmentedFrame:
+	        std::cout << "progressive segmented frame";
+	        break;
+	    default:
+	    	std::cout << "could not detect";
+	    	break;
+	    }
+
+	    std::cout << std::endl;
 
 	    return true;
 	}
@@ -324,7 +353,7 @@ int main()
         std::cout << "instance: " << i << std::endl;
 		if (!instance.detect(4, 2))
 		{
-			std::cout << "Failed to detect" << std::endl;
+			std::cout << "Failed to detect video mode" << std::endl;
 		}
 
 	    if (deckLink)
