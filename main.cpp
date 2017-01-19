@@ -104,24 +104,21 @@ public:
 		if (dm_it)
 		{
 	        dm_it->Release();
-	        dm_it = nullptr;
 	    }
 
 	    if (in)
 	    {
 	        in->Release();
-	        in = nullptr;
 	    }
 
 	    if (dl)
 	    {
 	        dl->Release();
-	        dl = nullptr;
 	    }
 
 	    if (delegate)
 	    {
-	    	delete delegate;
+	    	delegate->Release();
 	    }
 	}
 
