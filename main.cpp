@@ -239,61 +239,61 @@ public:
 	    	return false;
 	    }
 
-	    std::cout << "Video mode: ";
+	    std::cout << "video mode: ";
 
 	    switch (delegate->GetDisplayMode()->GetDisplayMode())
 	    {
-	        case bmdModeNTSC: std::cout << 0 << ", bmdModeNTSC" << std::endl; break;
-	        case bmdModeNTSC2398: std::cout << 1 << ", bmdModeNTSC2398" << std::endl; break;
-	        case bmdModePAL: std::cout << 2 << ", bmdModePAL" << std::endl; break;
-	        case bmdModeNTSCp: std::cout << 14 << ", bmdModeNTSCp" << std::endl; break;
-	        case bmdModePALp: std::cout << 15 << ", bmdModePALp" << std::endl; break;
+	        case bmdModeNTSC: std::cout << 0 << ", bmdModeNTSC"; break;
+	        case bmdModeNTSC2398: std::cout << 1 << ", bmdModeNTSC2398"; break;
+	        case bmdModePAL: std::cout << 2 << ", bmdModePAL"; break;
+	        case bmdModeNTSCp: std::cout << 14 << ", bmdModeNTSCp"; break;
+	        case bmdModePALp: std::cout << 15 << ", bmdModePALp"; break;
 
-	        case bmdModeHD1080p2398: std::cout << 3 << ", bmdModeHD1080p2398" << std::endl; break;
-	        case bmdModeHD1080p24: std::cout << 4 << ", bmdModeHD1080p24" << std::endl; break;
-	        case bmdModeHD1080p25: std::cout << 5 << ", bmdModeHD1080p25" << std::endl; break;
-	        case bmdModeHD1080p2997: std::cout << 6 << ", bmdModeHD1080p2997" << std::endl; break;
-	        case bmdModeHD1080p30: std::cout << 7 << ", bmdModeHD1080p30" << std::endl; break;
-	        case bmdModeHD1080i50: std::cout << 8 << ", bmdModeHD1080i50" << std::endl; break;
-	        case bmdModeHD1080i5994: std::cout << 9 << ", bmdModeHD1080i5994" << std::endl; break;
-	        case bmdModeHD1080i6000: std::cout << 10 << ", bmdModeHD1080i6000" << std::endl; break;
-	        case bmdModeHD1080p50: std::cout << 16 << ", bmdModeHD1080p50" << std::endl; break;
-	        case bmdModeHD1080p5994: std::cout << 17 << ", bmdModeHD1080p5994" << std::endl; break;
-	        case bmdModeHD1080p6000: std::cout << 18 << ", bmdModeHD1080p6000" << std::endl; break;
+	        case bmdModeHD1080p2398: std::cout << 3 << ", bmdModeHD1080p2398"; break;
+	        case bmdModeHD1080p24: std::cout << 4 << ", bmdModeHD1080p24"; break;
+	        case bmdModeHD1080p25: std::cout << 5 << ", bmdModeHD1080p25"; break;
+	        case bmdModeHD1080p2997: std::cout << 6 << ", bmdModeHD1080p2997"; break;
+	        case bmdModeHD1080p30: std::cout << 7 << ", bmdModeHD1080p30"; break;
+	        case bmdModeHD1080i50: std::cout << 8 << ", bmdModeHD1080i50"; break;
+	        case bmdModeHD1080i5994: std::cout << 9 << ", bmdModeHD1080i5994"; break;
+	        case bmdModeHD1080i6000: std::cout << 10 << ", bmdModeHD1080i6000"; break;
+	        case bmdModeHD1080p50: std::cout << 16 << ", bmdModeHD1080p50"; break;
+	        case bmdModeHD1080p5994: std::cout << 17 << ", bmdModeHD1080p5994"; break;
+	        case bmdModeHD1080p6000: std::cout << 18 << ", bmdModeHD1080p6000"; break;
 
-	        case bmdModeHD720p50: std::cout << 11 << ", bmdModeHD720p50" << std::endl; break;
-	        case bmdModeHD720p5994: std::cout << 12 << ", bmdModeHD720p5994" << std::endl; break;
-	        case bmdModeHD720p60: std::cout << 13 << ", bmdModeHD720p60" << std::endl; break;
+	        case bmdModeHD720p50: std::cout << 11 << ", bmdModeHD720p50"; break;
+	        case bmdModeHD720p5994: std::cout << 12 << ", bmdModeHD720p5994"; break;
+	        case bmdModeHD720p60: std::cout << 13 << ", bmdModeHD720p60"; break;
 
-	        case bmdMode2k2398: std::cout << 19 << ", bmdMode2k2398" << std::endl; break;
-	        case bmdMode2k24: std::cout << 20 << ", bmdMode2k24" << std::endl; break;
-	        case bmdMode2k25: std::cout << 21 << ", bmdMode2k25" << std::endl; break;
+	        case bmdMode2k2398: std::cout << 19 << ", bmdMode2k2398"; break;
+	        case bmdMode2k24: std::cout << 20 << ", bmdMode2k24"; break;
+	        case bmdMode2k25: std::cout << 21 << ", bmdMode2k25"; break;
 
-	        case bmdMode2kDCI2398: std::cout << 22 << ", bmdMode2kDCI2398" << std::endl; break;
-	        case bmdMode2kDCI24: std::cout << 23 << ", bmdMode2kDCI24" << std::endl; break;
-	        case bmdMode2kDCI25: std::cout << 24 << ", bmdMode2kDCI25" << std::endl; break;
+	        case bmdMode2kDCI2398: std::cout << 22 << ", bmdMode2kDCI2398"; break;
+	        case bmdMode2kDCI24: std::cout << 23 << ", bmdMode2kDCI24"; break;
+	        case bmdMode2kDCI25: std::cout << 24 << ", bmdMode2kDCI25"; break;
 
-	        case bmdMode4K2160p2398: std::cout << 25 << ", bmdMode4K2160p2398" << std::endl; break;
-	        case bmdMode4K2160p24: std::cout << 26 << ", bmdMode4K2160p24" << std::endl; break;
-	        case bmdMode4K2160p25: std::cout << 27 << ", bmdMode4K2160p25" << std::endl; break;
-	        case bmdMode4K2160p2997: std::cout << 28 << ", bmdMode4K2160p2997" << std::endl; break;
-	        case bmdMode4K2160p30: std::cout << 29 << ", bmdMode4K2160p30" << std::endl; break;
+	        case bmdMode4K2160p2398: std::cout << 25 << ", bmdMode4K2160p2398"; break;
+	        case bmdMode4K2160p24: std::cout << 26 << ", bmdMode4K2160p24"; break;
+	        case bmdMode4K2160p25: std::cout << 27 << ", bmdMode4K2160p25"; break;
+	        case bmdMode4K2160p2997: std::cout << 28 << ", bmdMode4K2160p2997"; break;
+	        case bmdMode4K2160p30: std::cout << 29 << ", bmdMode4K2160p30"; break;
 
 	#if BLACKMAGIC_DECKLINK_API_VERSION >= 0x0a030100
-	        case bmdMode4K2160p50: std::cout << 30 << ", bmdMode4K2160p50" << std::endl; break;
-	        case bmdMode4K2160p5994: std::cout << 31 << ", bmdMode4K2160p5994" << std::endl; break;
-	        case bmdMode4K2160p60: std::cout << 32 << ", bmdMode4K2160p60" << std::endl; break;
+	        case bmdMode4K2160p50: std::cout << 30 << ", bmdMode4K2160p50"; break;
+	        case bmdMode4K2160p5994: std::cout << 31 << ", bmdMode4K2160p5994"; break;
+	        case bmdMode4K2160p60: std::cout << 32 << ", bmdMode4K2160p60"; break;
 	#endif
 
-	        case bmdMode4kDCI2398: std::cout << 33 << ", bmdMode4kDCI2398" << std::endl; break;
-	        case bmdMode4kDCI24: std::cout << 34 << ", bmdMode4kDCI24" << std::endl; break;
-	        case bmdMode4kDCI25: std::cout << 35 << ", bmdMode4kDCI25" << std::endl; break;
+	        case bmdMode4kDCI2398: std::cout << 33 << ", bmdMode4kDCI2398"; break;
+	        case bmdMode4kDCI24: std::cout << 34 << ", bmdMode4kDCI24"; break;
+	        case bmdMode4kDCI25: std::cout << 35 << ", bmdMode4kDCI25"; break;
 	    }
 
 	    int64_t num, den;
     	delegate->GetDisplayMode()->GetFrameRate(&num, &den);
 
-	    std::cout << "resolution: " << delegate->GetDisplayMode()->GetWidth() << "x" << delegate->GetDisplayMode()->GetHeight() << ", framerate: " << static_cast<float>(num) / den << ", field dominance: ";
+	    std::cout << ", resolution: " << delegate->GetDisplayMode()->GetWidth() << "x" << delegate->GetDisplayMode()->GetHeight() << ", framerate: " << static_cast<float>(num) / den << ", field dominance: ";
 
 	    switch (delegate->GetDisplayMode()->GetFieldDominance())
 	    {
