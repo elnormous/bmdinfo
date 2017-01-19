@@ -293,7 +293,7 @@ public:
 	    int64_t num, den;
     	delegate->GetDisplayMode()->GetFrameRate(&num, &den);
 
-	    std::cout << "Resolution: " << delegate->GetDisplayMode()->GetWidth() << "x" << delegate->GetDisplayMode()->GetHeight() << ", framerate: " << static_cast<float>(num) / den << ", field dominance: ";
+	    std::cout << "resolution: " << delegate->GetDisplayMode()->GetWidth() << "x" << delegate->GetDisplayMode()->GetHeight() << ", framerate: " << static_cast<float>(num) / den << ", field dominance: ";
 
 	    switch (delegate->GetDisplayMode()->GetFieldDominance())
 	    {
@@ -357,10 +357,10 @@ int main()
 
         Instance instance(deckLink);
         
-        std::cout << "instance: " << i << std::endl;
+        std::cout << "Instance: " << i << ", ";
 		if (!instance.detect(4, 2))
 		{
-			std::cout << "Failed to detect video mode" << std::endl;
+			std::cout << "failed to detect video mode" << std::endl;
 		}
 
 	    if (deckLink)
