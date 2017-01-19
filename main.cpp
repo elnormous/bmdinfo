@@ -322,8 +322,8 @@ int main()
 			std::cout << "Failed to detect" << std::endl;
 		}
 
-	    if (it)
-	        it->Release();
+	    if (dl)
+	        dl->Release();
 
 	    ++i;
     }
