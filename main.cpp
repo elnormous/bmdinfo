@@ -1,13 +1,6 @@
 #include <iostream>
-#include <inttypes.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <time.h>
-#include <signal.h>
+#include <cinttypes>
+#include <thread>
 
 #include "DeckLinkAPIVersion.h"
 #include "DeckLinkAPI.h"
@@ -216,10 +209,17 @@ public:
 	    
 	    if (ret != S_OK)
 	        return false;
-	    
+
+	    std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
 	    while (!delegate->isDone())
 	    {
-	        usleep(20000);
+	    	if (startTime - std::chrono::steady_clock::now() > std::chrono::seconds(2))
+	    	{
+	    		break;
+	    	}
+
+        	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	    }
 	    
 	    ret = in->StopStreams();
