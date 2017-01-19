@@ -373,7 +373,7 @@ int main()
   		char* display = new char[maxSize];
 		CFStringGetCString(displayString, display, maxSize, kCFStringEncodingUTF8);
 
-  		std::cout << model << "(" << display << "), ";
+  		std::cout << model << " (" << display << "), ";
   		delete [] model;
   		delete [] display;
 #else
@@ -381,7 +381,7 @@ int main()
   		const char* display;
         deckLink->GetModelName(&model);
         deckLink->GetModelName(&display);
-  		std::cout << model << "(" << display << "), ";
+  		std::cout << model << " (" << display << "), ";
 #endif
 
         Instance instance(deckLink);
