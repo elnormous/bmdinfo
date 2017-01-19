@@ -377,8 +377,8 @@ int main()
   		delete [] model;
   		delete [] display;
 #else
-  		char* model;
-  		char* display;
+  		const char* model;
+  		const char* display;
         deckLink->GetModelName(&model);
         deckLink->GetModelName(&display);
   		std::cout << model << "(" << display << "), ";
