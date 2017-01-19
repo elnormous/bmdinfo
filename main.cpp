@@ -9,7 +9,7 @@
 class QueryDelegate : public IDeckLinkInputCallback
 {
 public:
-    QueryDelegate(BMDDisplayMode display_mode);
+    QueryDelegate(BMDDisplayMode mode);
     
     virtual HRESULT STDMETHODCALLTYPE
         QueryInterface(REFIID iid, LPVOID *ppv) { return E_NOINTERFACE; }
@@ -27,47 +27,50 @@ public:
         VideoInputFrameArrived(IDeckLinkVideoInputFrame*,
                                IDeckLinkAudioInputPacket*);
     
-    BMDDisplayMode GetDisplayMode() const { return display_mode; }
+    BMDDisplayMode GetDisplayMode() const { return displayMode; }
     bool isDone() const { return done; }
                    
     private:
-        BMDDisplayMode display_mode;
-        ULONG ref_count;
+    	BMDDisplayMode currentDisplayMode;
+        BMDDisplayMode displayMode = 0;
+        ULONG refCount;
         bool done;
 };
 
-QueryDelegate::QueryDelegate(BMDDisplayMode display_mode): display_mode(display_mode), ref_count(0), done(false)
+QueryDelegate::QueryDelegate(BMDDisplayMode mode): currentDisplayMode(mode), refCount(0), done(false)
 {
 }
 
 ULONG QueryDelegate::AddRef(void)
 {
-    ref_count++;
-    return ref_count;
+    refCount++;
+    return refCount;
 }
 
 ULONG QueryDelegate::Release(void)
 {
-    ref_count--;
+    refCount--;
 
-    if (!ref_count) {
+    if (!refCount)
+    {
         delete this;
         return 0;
     }
 
-    return ref_count;
+    return refCount;
 }
 
 HRESULT
-QueryDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame  *v_frame,
-                                      IDeckLinkAudioInputPacket *a_frame)
+QueryDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* videoFrame,
+                                      IDeckLinkAudioInputPacket* audioFframe)
 {
-    if (v_frame->GetFlags() & bmdFrameHasNoInputSource)
+    if (videoFrame->GetFlags() & bmdFrameHasNoInputSource)
     {
         return S_OK;
     }
     else
     {
+    	displayMode = currentDisplayMode;
         done = true;
     }
     
@@ -76,10 +79,10 @@ QueryDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame  *v_frame,
 
 HRESULT
 QueryDelegate::VideoInputFormatChanged(BMDVideoInputFormatChangedEvents ev,
-                                       IDeckLinkDisplayMode *mode,
+                                       IDeckLinkDisplayMode* mode,
                                        BMDDetectedVideoInputFormatFlags)
 {
-    display_mode = mode->GetDisplayMode();
+    displayMode = mode->GetDisplayMode();
     done = true;
     return S_OK;
 }
@@ -87,26 +90,26 @@ QueryDelegate::VideoInputFormatChanged(BMDVideoInputFormatChangedEvents ev,
 class Instance
 {
 public:
-	Instance(IDeckLink* deckLink):
-		dl(deckLink)
+	Instance(IDeckLink* dl):
+		deckLink(dl)
 	{
 	}
 
 	~Instance()
 	{
-		if (dm_it)
+		if (displayModeIterator)
 		{
-	        dm_it->Release();
+	        displayModeIterator->Release();
 	    }
 
-	    if (in)
+	    if (input)
 	    {
-	        in->Release();
+	        input->Release();
 	    }
 
-	    if (dl)
+	    if (deckLink)
 	    {
-	        dl->Release();
+	        deckLink->Release();
 	    }
 	}
 
@@ -115,7 +118,7 @@ public:
 		HRESULT ret;
 
 		IDeckLinkAttributes* deckLinkAttributes;
-	    ret = dl->QueryInterface(IID_IDeckLinkAttributes, (void**)&deckLinkAttributes);
+	    ret = deckLink->QueryInterface(IID_IDeckLinkAttributes, (void**)&deckLinkAttributes);
 	    
 	    if (ret != S_OK)
 	        return false;
@@ -129,19 +132,21 @@ public:
 	    if (!formatDetectionSupported)
 	        return false;
 	    
-	    ret = dl->QueryInterface(IID_IDeckLinkInput, (void**)&in);
+	    ret = deckLink->QueryInterface(IID_IDeckLinkInput, (void**)&input);
 	    if (ret != S_OK)
 	        return false;
 
-	    ret = dl->QueryInterface(IID_IDeckLinkConfiguration, (void**)&conf);
+	    ret = deckLink->QueryInterface(IID_IDeckLinkConfiguration, (void**)&configuration);
+	    if (ret != S_OK)
+	        return false;
 
 	    switch (audio_connection)
 	    {
 	    case 1:
-	        ret = conf->SetInt(bmdDeckLinkConfigAudioInputConnection, bmdAudioConnectionAnalog);
+	        ret = configuration->SetInt(bmdDeckLinkConfigAudioInputConnection, bmdAudioConnectionAnalog);
 	        break;
 	    case 2:
-	        ret = conf->SetInt(bmdDeckLinkConfigAudioInputConnection, bmdAudioConnectionEmbedded);
+	        ret = configuration->SetInt(bmdDeckLinkConfigAudioInputConnection, bmdAudioConnectionEmbedded);
 	        break;
 	    default:
 	        // do not change it
@@ -154,16 +159,16 @@ public:
 	    switch (video_connection)
 	    {
 	    case 1:
-	        ret = conf->SetInt(bmdDeckLinkConfigVideoInputConnection, bmdVideoConnectionComposite);
+	        ret = configuration->SetInt(bmdDeckLinkConfigVideoInputConnection, bmdVideoConnectionComposite);
 	        break;
 	    case 2:
-	        ret = conf->SetInt(bmdDeckLinkConfigVideoInputConnection, bmdVideoConnectionComponent);
+	        ret = configuration->SetInt(bmdDeckLinkConfigVideoInputConnection, bmdVideoConnectionComponent);
 	        break;
 	    case 3:
-	        ret = conf->SetInt(bmdDeckLinkConfigVideoInputConnection, bmdVideoConnectionHDMI);
+	        ret = configuration->SetInt(bmdDeckLinkConfigVideoInputConnection, bmdVideoConnectionHDMI);
 	        break;
 	    case 4:
-	        ret = conf->SetInt(bmdDeckLinkConfigVideoInputConnection, bmdVideoConnectionSDI);
+	        ret = configuration->SetInt(bmdDeckLinkConfigVideoInputConnection, bmdVideoConnectionSDI);
 	        break;
 	    default:
 	        // do not change it
@@ -173,17 +178,17 @@ public:
 	    if (ret != S_OK)
 	        return false;
 
-	    ret = in->GetDisplayModeIterator(&dm_it);
+	    ret = input->GetDisplayModeIterator(&displayModeIterator);
 
 	    if (ret != S_OK)
 	        return false;
 
 	    while (true)
 	    {
-	        if (dm_it->Next(&dm) != S_OK)
+	        if (displayModeIterator->Next(&displayMode) != S_OK)
 	        {
-	            dm->Release();
-	            dm = nullptr;
+	            displayMode->Release();
+	            displayMode = nullptr;
 	        }
 	        else
 	        {
@@ -191,21 +196,21 @@ public:
 	        }
 	    }
 	    
-	    if (!dm)
+	    if (!displayMode)
 	        return false;
 
-	    QueryDelegate* delegate = new QueryDelegate(dm->GetDisplayMode());
+	    QueryDelegate* delegate = new QueryDelegate(displayMode->GetDisplayMode());
 
 	    if (!delegate)
 	        return false;
 
-	    in->SetCallback(delegate);
+	    input->SetCallback(delegate);
 
-	    ret = in->EnableVideoInput(dm->GetDisplayMode(),
-	                               bmdFormat8BitYUV,
-	                               bmdVideoInputEnableFormatDetection);
+	    ret = input->EnableVideoInput(displayMode->GetDisplayMode(),
+	                               	  bmdFormat8BitYUV,
+	                                  bmdVideoInputEnableFormatDetection);
 
-	    ret = in->StartStreams();
+	    ret = input->StartStreams();
 	    
 	    if (ret != S_OK)
 	        return false;
@@ -222,7 +227,7 @@ public:
         	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	    }
 	    
-	    ret = in->StopStreams();
+	    ret = input->StopStreams();
 	    
 	    if (ret != S_OK)
 	        return false;
@@ -284,11 +289,11 @@ public:
 	}
 
 private:
-	IDeckLink* dl;
-    IDeckLinkInput*in = nullptr;
-    IDeckLinkDisplayModeIterator* dm_it = nullptr;
-    IDeckLinkDisplayMode* dm = nullptr;
-    IDeckLinkConfiguration* conf = nullptr;
+	IDeckLink* deckLink;
+    IDeckLinkInput* input = nullptr;
+    IDeckLinkDisplayModeIterator* displayModeIterator = nullptr;
+    IDeckLinkDisplayMode* displayMode = nullptr;
+    IDeckLinkConfiguration* configuration = nullptr;
 };
 
 int main()
@@ -296,25 +301,25 @@ int main()
     HRESULT ret;
     uint32_t i = 0;
 
-    IDeckLinkIterator* it = CreateDeckLinkIteratorInstance();
+    IDeckLinkIterator* deckLinkIterator = CreateDeckLinkIteratorInstance();
 
-    if (!it)
+    if (!deckLinkIterator)
     {
         return 1;
     }
 
     while (true)
     {
-    	IDeckLink* dl = nullptr;
-        ret = it->Next(&dl);
+    	IDeckLink* deckLink = nullptr;
+        ret = deckLinkIterator->Next(&deckLink);
 
         if (ret != S_OK)
         {
-    		it->Release();
+    		deckLinkIterator->Release();
         	return 0;
         }
 
-        Instance instance(dl);
+        Instance instance(deckLink);
         
         std::cout << "instance: " << i << std::endl;
 		if (!instance.detect(4, 2))
@@ -322,10 +327,15 @@ int main()
 			std::cout << "Failed to detect" << std::endl;
 		}
 
-	    if (dl)
-	        dl->Release();
+	    if (deckLink)
+	        deckLink->Release();
 
 	    ++i;
+    }
+
+    if (deckLinkIterator)
+    {
+    	deckLinkIterator->Release();
     }
 
     return 0;
