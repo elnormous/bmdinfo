@@ -355,9 +355,37 @@ int main()
         	return 0;
         }
 
-        Instance instance(deckLink);
-        
         std::cout << "Instance: " << i << ", ";
+
+#ifdef __APPLE__
+        CFStringRef modelString;
+        CFStringRef displayString;
+        deckLink->GetModelName(&modelString);
+        deckLink->GetModelName(&displayString);
+
+        CFIndex length = CFStringGetLength(modelString);
+  		CFIndex maxSize = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingUTF8) + 1;
+  		char* model = new char[maxSize];
+		CFStringGetCString(modelString, model, maxSize, kCFStringEncodingUTF8);
+
+		length = CFStringGetLength(displayString);
+  		maxSize = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingUTF8) + 1;
+  		char* display = new char[maxSize];
+		CFStringGetCString(displayString, display, maxSize, kCFStringEncodingUTF8);
+
+  		std::cout << model << "(" << display << "), ";
+  		delete [] model;
+  		delete [] display;
+#else
+  		char* name;
+  		char* display;
+        deckLink->GetModelName(&name);
+        deckLink->GetModelName(&display);
+  		std::cout << model << "(" << display << "), ";
+#endif
+
+        Instance instance(deckLink);
+
 		if (!instance.detect(4, 2))
 		{
 			std::cout << "failed to detect video mode" << std::endl;
