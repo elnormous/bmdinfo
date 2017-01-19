@@ -31,7 +31,7 @@ debug: $(SOURCES) $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS) 
 	$(CXX) $(OBJECTS) $(LDFLAGS) -o $@
 
-.cpp.o:
+%.o: %.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@
 
 .PHONY: clean
