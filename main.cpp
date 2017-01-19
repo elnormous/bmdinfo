@@ -67,12 +67,11 @@ ULONG QueryDelegate::Release(void)
 
 HRESULT
 QueryDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame  *v_frame,
-                                        IDeckLinkAudioInputPacket *a_frame)
+                                      IDeckLinkAudioInputPacket *a_frame)
 {
     if (v_frame->GetFlags() & bmdFrameHasNoInputSource)
     {
-    	display_mode = 0;
-        done = true;
+        return S_OK;
     }
     else
     {
@@ -84,8 +83,8 @@ QueryDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame  *v_frame,
 
 HRESULT
 QueryDelegate::VideoInputFormatChanged(BMDVideoInputFormatChangedEvents ev,
-                                         IDeckLinkDisplayMode *mode,
-                                         BMDDetectedVideoInputFormatFlags)
+                                       IDeckLinkDisplayMode *mode,
+                                       BMDDetectedVideoInputFormatFlags)
 {
     display_mode = mode->GetDisplayMode();
     done = true;
