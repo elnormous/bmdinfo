@@ -32,7 +32,7 @@ public:
                    
     private:
     	BMDDisplayMode currentDisplayMode;
-        BMDDisplayMode displayMode = 0;
+        BMDDisplayMode displayMode = 0xffffffff;
         ULONG refCount;
         bool done;
 };
