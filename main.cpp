@@ -214,7 +214,7 @@ public:
 
 	    while (!delegate->isDone())
 	    {
-	    	if (startTime - std::chrono::steady_clock::now() > std::chrono::seconds(2))
+	    	if (std::chrono::steady_clock::now() - startTime > std::chrono::seconds(2))
 	    	{
 	    		break;
 	    	}
