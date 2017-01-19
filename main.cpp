@@ -9,7 +9,7 @@
 class QueryDelegate : public IDeckLinkInputCallback
 {
 public:
-    QueryDelegate(BMDDisplayMode mode);
+    QueryDelegate(IDeckLinkDisplayMode* mode);
     
     virtual HRESULT STDMETHODCALLTYPE
         QueryInterface(REFIID iid, LPVOID *ppv) { return E_NOINTERFACE; }
@@ -27,17 +27,17 @@ public:
         VideoInputFrameArrived(IDeckLinkVideoInputFrame*,
                                IDeckLinkAudioInputPacket*);
     
-    BMDDisplayMode GetDisplayMode() const { return displayMode; }
+    IDeckLinkDisplayMode* GetDisplayMode() const { return displayMode; }
     bool isDone() const { return done; }
                    
     private:
-    	BMDDisplayMode currentDisplayMode;
-        BMDDisplayMode displayMode = 0xffffffff;
+    	IDeckLinkDisplayMode* currentDisplayMode;
+        IDeckLinkDisplayMode* displayMode = nullptr;
         ULONG refCount;
         bool done;
 };
 
-QueryDelegate::QueryDelegate(BMDDisplayMode mode): currentDisplayMode(mode), refCount(0), done(false)
+QueryDelegate::QueryDelegate(IDeckLinkDisplayMode* mode): currentDisplayMode(mode), refCount(0), done(false)
 {
 }
 
@@ -82,7 +82,7 @@ QueryDelegate::VideoInputFormatChanged(BMDVideoInputFormatChangedEvents ev,
                                        IDeckLinkDisplayMode* mode,
                                        BMDDetectedVideoInputFormatFlags)
 {
-    displayMode = mode->GetDisplayMode();
+    displayMode = mode;
     done = true;
     return S_OK;
 }
@@ -113,7 +113,7 @@ public:
 	    }
 	}
 
-	bool detect(int video_connection, int audio_connection)
+	bool detect(int videoConnection, int audioConnection)
 	{
 		HRESULT ret;
 
@@ -140,7 +140,7 @@ public:
 	    if (ret != S_OK)
 	        return false;
 
-	    switch (audio_connection)
+	    switch (audioConnection)
 	    {
 	    case 1:
 	        ret = configuration->SetInt(bmdDeckLinkConfigAudioInputConnection, bmdAudioConnectionAnalog);
@@ -156,7 +156,7 @@ public:
 	    if (ret != S_OK)
 	        return false;
 
-	    switch (video_connection)
+	    switch (videoConnection)
 	    {
 	    case 1:
 	        ret = configuration->SetInt(bmdDeckLinkConfigVideoInputConnection, bmdVideoConnectionComposite);
@@ -199,7 +199,7 @@ public:
 	    if (!displayMode)
 	        return false;
 
-	    QueryDelegate* delegate = new QueryDelegate(displayMode->GetDisplayMode());
+	    QueryDelegate* delegate = new QueryDelegate(displayMode);
 
 	    if (!delegate)
 	        return false;
@@ -231,10 +231,15 @@ public:
 	    
 	    if (ret != S_OK)
 	        return false;
-	    
+
+	    if (!delegate->GetDisplayMode())
+	    {
+	    	return false;
+	    }
+
 	    std::cout << "Video mode: ";
 
-	    switch (delegate->GetDisplayMode())
+	    switch (delegate->GetDisplayMode()->GetDisplayMode())
 	    {
 	        case bmdModeNTSC: std::cout << 0 << ", bmdModeNTSC" << std::endl; break;
 	        case bmdModeNTSC2398: std::cout << 1 << ", bmdModeNTSC2398" << std::endl; break;
@@ -281,16 +286,14 @@ public:
 	        case bmdMode4kDCI2398: std::cout << 33 << ", bmdMode4kDCI2398" << std::endl; break;
 	        case bmdMode4kDCI24: std::cout << 34 << ", bmdMode4kDCI24" << std::endl; break;
 	        case bmdMode4kDCI25: std::cout << 35 << ", bmdMode4kDCI25" << std::endl; break;
-
-	        default: std::cout << ", unknown" << std::endl; return false;
 	    }
 
 	    int64_t num, den;
-    	displayMode->GetFrameRate(&num, &den);
+    	delegate->GetDisplayMode()->GetFrameRate(&num, &den);
 
-	    std::cout << "Resolution: " << displayMode->GetWidth() << "x" << displayMode->GetHeight() << ", framerate: " << static_cast<float>(num) / den << ", field dominance: ";
+	    std::cout << "Resolution: " << delegate->GetDisplayMode()->GetWidth() << "x" << delegate->GetDisplayMode()->GetHeight() << ", framerate: " << static_cast<float>(num) / den << ", field dominance: ";
 
-	    switch (displayMode->GetFieldDominance())
+	    switch (delegate->GetDisplayMode()->GetFieldDominance())
 	    {
 	    case bmdUnknownFieldDominance:
 	        std::cout << "unknown";
