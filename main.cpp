@@ -71,6 +71,7 @@ QueryDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* videoFrame,
     else
     {
     	displayMode = currentDisplayMode;
+    	displayMode->AddRef();
         done = true;
     }
     
@@ -83,6 +84,7 @@ QueryDelegate::VideoInputFormatChanged(BMDVideoInputFormatChangedEvents ev,
                                        BMDDetectedVideoInputFormatFlags)
 {
     displayMode = mode;
+    displayMode->AddRef();
     done = true;
     return S_OK;
 }
@@ -316,6 +318,8 @@ public:
 	    }
 
 	    std::cout << std::endl;
+
+	    delegate->GetDisplayMode()->Release();
 
 	    return true;
 	}
